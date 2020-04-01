@@ -1,9 +1,9 @@
 package org.apollo.game.plugin.testing.junit.api.interactions
 
-import org.apollo.game.message.impl.ItemOptionMessage
-import org.apollo.game.message.impl.NpcActionMessage
-import org.apollo.game.message.impl.ObjectActionMessage
-import org.apollo.game.message.impl.PlayerActionMessage
+import org.apollo.game.message.impl.decode.ItemOptionMessage
+import org.apollo.game.message.impl.decode.NpcActionMessage
+import org.apollo.game.message.impl.decode.ObjectActionMessage
+import org.apollo.game.message.impl.decode.PlayerActionMessage
 import org.apollo.game.model.Direction
 import org.apollo.game.model.Position
 import org.apollo.game.model.entity.Entity
@@ -15,8 +15,9 @@ import org.apollo.game.model.entity.obj.GameObject
  * Send an [ItemOptionMessage] for the given [id], [option], [slot], and [interfaceId], simulating a
  * player interacting with an item.
  */
-fun Player.interactWithItem(id: Int, option: Int, slot: Int? = null, interfaceId: Int? = null) {
-    send(ItemOptionMessage(option, interfaceId ?: -1, id, slot ?: inventory.slotOf(id)))
+fun Player.interactWithItem(id: Int, option: Int, slot: Int? = null, interfaceId: Int? = null, componentId: Int? = null) {
+    send(ItemOptionMessage(option, interfaceId ?: -1, componentId
+            ?: -1, id, slot ?: inventory.slotOf(id)))
 }
 
 /**

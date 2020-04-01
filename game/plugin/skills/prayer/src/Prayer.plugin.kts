@@ -1,7 +1,7 @@
 import Bone.Companion.isBone
 import Prayer.Companion.isPrayerButton
-import org.apollo.game.message.impl.ButtonMessage
-import org.apollo.game.message.impl.ItemOptionMessage
+import org.apollo.game.message.impl.decode.IfActionMessage
+import org.apollo.game.message.impl.decode.ItemOptionMessage
 import org.apollo.game.model.event.impl.LogoutEvent
 import org.apollo.game.plugin.api.prayer
 
@@ -11,10 +11,10 @@ on_player_event { LogoutEvent::class }
         playerPrayers.removeAll(it)
     }
 
-on { ButtonMessage::class }
-    .where { widgetId.isPrayerButton() }
+on { IfActionMessage::class }
+    .where { componentId.isPrayerButton() }
     .then { player ->
-        val prayer = Prayer.forButton(widgetId)!!
+        val prayer = Prayer.forButton(componentId)!!
         val level = prayer.level
 
         if (level > player.prayer.current) {

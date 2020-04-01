@@ -1,6 +1,6 @@
 package org.apollo.game.message.handler;
 
-import org.apollo.game.message.impl.ItemOnItemMessage;
+import org.apollo.game.message.impl.decode.ItemOnItemMessage;
 import org.apollo.game.model.Item;
 import org.apollo.game.model.World;
 import org.apollo.game.model.entity.Player;
@@ -30,7 +30,7 @@ public final class ItemOnItemVerificationHandler extends MessageHandler<ItemOnIt
 
 		switch (message.getInterfaceId()) {
 			case SynchronizationInventoryListener.INVENTORY_ID:
-			case BankConstants.BANK_CONTAINER_COMPONENT:
+			case BankConstants.CONTAINER_COMPONENT:
 				inventory = player.getInventory();
 				break;
 			case SynchronizationInventoryListener.EQUIPMENT_ID:

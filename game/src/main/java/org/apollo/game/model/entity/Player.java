@@ -3,9 +3,7 @@ package org.apollo.game.model.entity;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import org.apollo.game.message.impl.*;
-import org.apollo.game.message.impl.encode.ConfigMessage;
-import org.apollo.game.message.impl.encode.RebuildNormalMessage;
-import org.apollo.game.message.impl.encode.UpdateRunEnergyMessage;
+import org.apollo.game.message.impl.encode.*;
 import org.apollo.game.model.Appearance;
 import org.apollo.game.model.Position;
 import org.apollo.game.model.World;
@@ -222,6 +220,8 @@ public final class Player extends Mob {
 	public Player(World world, PlayerCredentials credentials, Position position) {
 		super(world, position);
 		this.credentials = credentials;
+
+		inventory.add(4155, 1);
 
 		init();
 	}
@@ -641,9 +641,9 @@ public final class Player extends Mob {
 	 */
 	public void openBank() {
 		InventoryListener invListener = new SynchronizationInventoryListener(this, BankConstants.INVENTORY_INTERFACE,
-				BankConstants.BANK_INVENTORY_COMPONENT, SynchronizationInventoryListener.INVENTORY_INVENTORY);
-		InventoryListener bankListener = new SynchronizationInventoryListener(this, BankConstants.BANK_WINDOW_ID,
-				BankConstants.BANK_CONTAINER_COMPONENT, BankConstants.BANK_INVENTORY);
+				BankConstants.INVENTORY_COMPONENT, SynchronizationInventoryListener.INVENTORY_INVENTORY);
+		InventoryListener bankListener = new SynchronizationInventoryListener(this, BankConstants.WINDOW_ID,
+				BankConstants.CONTAINER_COMPONENT, BankConstants.INVENTORY);
 
 		inventory.addListener(invListener);
 		bank.addListener(bankListener);
@@ -651,7 +651,7 @@ public final class Player extends Mob {
 		bank.forceRefresh();
 
 		InterfaceListener interListener = new BankInterfaceListener(this, invListener, bankListener);
-		interfaceSet.openModal(interListener, BankConstants.BANK_WINDOW_ID);
+		interfaceSet.openModal(interListener, BankConstants.WINDOW_ID);
 		interfaceSet.openTopLevel(BankConstants.INVENTORY_INTERFACE, TopLevelPosition.INVENTORY_TAB);
 	}
 
@@ -768,7 +768,7 @@ public final class Player extends Mob {
 		Preconditions.checkArgument(size <= lines, "List contains too much text to display on this interface.");
 
 		for (int pos = 0; pos < lines; pos++) {
-			send(new SetWidgetTextMessage(InterfaceConstants.QUEST_TEXT[pos], pos < size ? text.get(pos) : ""));
+			//send(new IfSetTextMessage(InterfaceConstants.QUEST_TEXT[pos], - pos < size ? text.get(pos) : ""));
 		}
 		interfaceSet.openModal(InterfaceConstants.QUEST_INTERFACE);
 	}
@@ -1003,10 +1003,12 @@ public final class Player extends Mob {
 		InventoryListener appearance = new AppearanceInventoryListener(this);
 
 		InventoryListener syncInventory = new SynchronizationInventoryListener(this,
-				SynchronizationInventoryListener.INVENTORY_ID, SynchronizationInventoryListener.INVENTORY_CONTAINER_COMPONENT,
+				SynchronizationInventoryListener.INVENTORY_ID,
+				SynchronizationInventoryListener.INVENTORY_CONTAINER_COMPONENT,
 				SynchronizationInventoryListener.INVENTORY_INVENTORY);
 		InventoryListener syncEquipment = new SynchronizationInventoryListener(this,
-				SynchronizationInventoryListener.EQUIPMENT_ID, SynchronizationInventoryListener.EQUIPMENT_CONTAINER_COMPONENT,
+				SynchronizationInventoryListener.EQUIPMENT_ID,
+				SynchronizationInventoryListener.EQUIPMENT_CONTAINER_COMPONENT,
 				SynchronizationInventoryListener.EQUIPMENT_CONTAINER);
 
 		inventory.addListener(syncInventory);

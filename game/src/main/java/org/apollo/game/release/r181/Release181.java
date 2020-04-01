@@ -1,19 +1,17 @@
 package org.apollo.game.release.r181;
 
-import org.apollo.game.message.impl.NpcSynchronizationMessage;
-import org.apollo.game.message.impl.ServerChatMessage;
-import org.apollo.game.message.impl.UpdateInventoryFullMessage;
-import org.apollo.game.message.impl.UpdateInventoryPartialMessage;
+import org.apollo.game.message.impl.*;
 import org.apollo.game.message.impl.encode.*;
 import org.apollo.game.release.r181.decoders.*;
-import org.apollo.game.release.r181.decoders.interfaces.ClosedInterfaceMessageDecoder;
-import org.apollo.game.release.r181.decoders.interfaces.DisplayStatusMessageDecoder;
-import org.apollo.game.release.r181.decoders.interfaces.EnteredAmountMessageDecoder;
 import org.apollo.game.release.r181.decoders.map.MapRebuildCompleteDecoder;
+import org.apollo.game.release.r181.encoders.game.LogoutEncoder;
+import org.apollo.game.release.r181.encoders.region.MobResetAnimsEncoder;
 import org.apollo.game.release.r181.decoders.map.WalkMessageDecoder;
-import org.apollo.game.release.r181.decoders.map.npc.*;
+import org.apollo.game.release.r181.decoders.map.item.*;
+import org.apollo.game.release.r181.decoders.map.npc.actions.*;
 import org.apollo.game.release.r181.decoders.map.obj.*;
-import org.apollo.game.release.r181.decoders.map.player.*;
+import org.apollo.game.release.r181.decoders.map.player.PlayerDesignMessageDecoder;
+import org.apollo.game.release.r181.decoders.map.player.ReportAbuseMessageDecoder;
 import org.apollo.game.release.r181.decoders.map.player.actions.*;
 import org.apollo.game.release.r181.decoders.social.PrivacyOptionMessageDecoder;
 import org.apollo.game.release.r181.decoders.social.PrivateChatMessageDecoder;
@@ -21,6 +19,12 @@ import org.apollo.game.release.r181.decoders.social.friends.AddFriendMessageDeco
 import org.apollo.game.release.r181.decoders.social.friends.RemoveFriendMessageDecoder;
 import org.apollo.game.release.r181.decoders.social.ignores.AddIgnoreMessageDecoder;
 import org.apollo.game.release.r181.decoders.social.ignores.RemoveIgnoreMessageDecoder;
+import org.apollo.game.release.r181.decoders.ui.ClosedInterfaceMessageDecoder;
+import org.apollo.game.release.r181.decoders.ui.DisplayStatusMessageDecoder;
+import org.apollo.game.release.r181.decoders.ui.EnteredAmountMessageDecoder;
+import org.apollo.game.release.r181.decoders.ui.if1.*;
+import org.apollo.game.release.r181.decoders.ui.if3.If3ActionMessageDecoder;
+import org.apollo.game.release.r181.decoders.ui.opheld.*;
 import org.apollo.game.release.r181.encoders.UpdateRunEnergyMessageEncoder;
 import org.apollo.game.release.r181.encoders.UpdateSkillMessageEncoder;
 import org.apollo.game.release.r181.encoders.UpdateWeightMessageEncoder;
@@ -28,6 +32,7 @@ import org.apollo.game.release.r181.encoders.game.ServerChatMessageEncoder;
 import org.apollo.game.release.r181.encoders.npc.NpcSynchronizationMessageEncoder;
 import org.apollo.game.release.r181.encoders.player.SetPlayerActionMessageEncoder;
 import org.apollo.game.release.r181.encoders.region.RebuildNormalMessageEncoder;
+import org.apollo.game.release.r181.encoders.region.SetMapFlagEncoder;
 import org.apollo.game.release.r181.encoders.ui.*;
 import org.apollo.game.release.r181.encoders.ui.container.UpdateContainerFullMessageEncoder;
 import org.apollo.game.release.r181.encoders.ui.container.UpdateContainerPartialMessageEncoder;
@@ -154,12 +159,31 @@ public class Release181 extends Release {
 		 * Server
 		 */
 
+		register(LogoutMessage.class, new LogoutEncoder());
+
 		register(SetPlayerActionMessage.class, new SetPlayerActionMessageEncoder());
+		register(SetMapFlagMessage.class, new SetMapFlagEncoder());
+
+		register(MobResetAnimsMessage.class, new MobResetAnimsEncoder());
 
 		register(IfOpenTopMessage.class, new IfOpenTopMessageEncoder());
 		register(IfOpenSubMessage.class, new IfOpenSubMessageEncoder());
 		register(IfMoveSubMessage.class, new IfMoveSubMessageEncoder());
 		register(IfSetEventMessage.class, new IfSetEventMessageEncoder());
+		register(IfClearItemsMessage.class, new IfClearItemsEncoder());
+		register(IfSetAngleMessage.class, new IfSetAngleEncoder());
+		register(IfSetAnimMessage.class, new IfSetAnimEncoder());
+		register(IfSetColourMessage.class, new IfSetColourEncoder());
+		register(IfSetHideMessage.class, new IfSetHiddenEncoder());
+		register(IfSetItemMessage.class, new IfSetItemEncoder());
+		register(IfSetModelMessage.class, new IfSetModelEncoder());
+		register(IfSetModelRotateMessage.class, new IfSetModelRotateEncoder());
+		register(IfSetNpcHeadMessage.class, new IfSetNpcHeadEncoder());
+		register(IfSetPlayerHeadMessage.class, new IfSetPlayerHeadEncoder());
+		register(IfSetPositionMessage.class, new IfSetPositionEncoder());
+		register(IfSetScrollPosMessage.class, new IfSetScrollPosEncoder());
+		register(IfSetTextMessage.class, new IfSetTextEncoder());
+		register(RunClientScriptMessage.class, new RunClientScriptEncoder());
 
 		register(UpdateInventoryPartialMessage.class, new UpdateContainerPartialMessageEncoder());
 		register(UpdateInventoryFullMessage.class, new UpdateContainerFullMessageEncoder());
@@ -213,6 +237,31 @@ public class Release181 extends Release {
 		register(35, new DisplayStatusMessageDecoder());
 		register(20, new ClosedInterfaceMessageDecoder());
 
+		final var if3 = new int[]{68, 21, 48, 19, 40, 66, 85, 14, 84, 0};
+		for (int index = 0; index < if3.length; index++) {
+			register(if3[index], new If3ActionMessageDecoder(index + 1));
+		}
+
+		register(46, new FirstIf1ActionMessageDecoder());
+		register(26, new SecondIf1ActionMessageDecoder());
+		register(65, new ThirdIf1ActionMessageDecoder());
+		register(64, new FourthIf1ActionMessageDecoder());
+		register(32, new FifthIf1ActionMessageDecoder());
+
+		register(87, new FirstOpHeldMessageDecoder());
+		register(98, new SecondOpHeldMessageDecoder());
+		register(72, new ThirdOpHeldMessageDecoder());
+		register(7, new FourthOpHeldMessageDecoder());
+		register(58, new FifthOpHeldMessageDecoder());
+		register(24, new SixthOpHeldMessageDecoder());
+
+
+		register(5, new FirstOpItemMessageDecoder());
+		register(74, new SecondOpItemMessageDecoder());
+		register(6, new ThirdOpItemMessageDecoder());
+		register(29, new FourthOpItemMessageDecoder());
+		register(51, new FifthOpItemMessageDecoder());
+
 		/**
 		 * Resume Inputs
 		 */
@@ -229,6 +278,8 @@ public class Release181 extends Release {
 		register(93, new SixthPlayerActionMessageDecoder());
 		register(75, new SeventhPlayerActionMessageDecoder());
 		register(50, new EightPlayerActionMessageDecoder());
+
+		register(12, new PlayerDesignMessageDecoder());
 
 		/**
 		 * NPC

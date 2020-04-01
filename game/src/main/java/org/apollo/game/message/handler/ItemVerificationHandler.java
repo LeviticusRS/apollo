@@ -1,6 +1,6 @@
 package org.apollo.game.message.handler;
 
-import org.apollo.game.message.impl.InventoryItemMessage;
+import org.apollo.game.message.impl.decode.InventoryItemMessage;
 import org.apollo.game.model.Item;
 import org.apollo.game.model.World;
 import org.apollo.game.model.entity.Player;
@@ -46,7 +46,7 @@ public final class ItemVerificationHandler extends MessageHandler<InventoryItemM
 		inventories.put(SynchronizationInventoryListener.INVENTORY_ID, Player::getInventory);
 		inventories.put(BankConstants.INVENTORY_INTERFACE, Player::getInventory);
 		inventories.put(SynchronizationInventoryListener.EQUIPMENT_ID, Player::getEquipment);
-		inventories.put(BankConstants.BANK_WINDOW_ID, Player::getBank);
+		inventories.put(BankConstants.WINDOW_ID, Player::getBank);
 	}
 
 	/**
